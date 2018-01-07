@@ -23,8 +23,18 @@
   copy:
     content: '{{ item.ssh_key }}'
     dest: '/home/{{ item.name }}/.ssh/authorized_keys'
-    mode: 0755
+    mode: 0600
     owner: '{{ item.name }}'
     group: '{{ item.name }}'
   when: item.ssh_key is defined
+  with_items: '{{ users }}'
+
+- name: Install Github SSH keys for user
+  get_url:
+    url: 'https://github.com/{{ item.github_key_user }}.keys'
+    dest: '/home/{{ item.name }}/.ssh/authorized_keys'
+    mode: 0600
+    owner: '{{ item.name }}'
+    group: '{{ item.name }}'
+  when: item.github_key_user is defined and item.ssh_key is not defined
   with_items: '{{ users }}'
