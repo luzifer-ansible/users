@@ -39,3 +39,20 @@
     group: '{{ item.name }}'
   when: item.github_key_user is defined and item.ssh_key is not defined
   with_items: '{{ users }}'
+
+- name: Set up sudo access for user
+  copy:
+    content: |
+      {{ item.name }} ALL=(ALL) NOPASSWD: ALL
+    dest: '/etc/sudoers.d/{{ item.name }}'
+  when: item.sudo is defined and item.sudo
+  with_items: '{{ users }}'
+
+- name: Revoke sudo access for user
+  file:
+    dest: '/etc/sudoers.d/{{ item.name }}'
+    state: absent
+  when: item.sudo is not defined or not item.sudo
+  with_items: '{{ users }}'
+
+...
