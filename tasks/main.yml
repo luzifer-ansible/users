@@ -1,0 +1,30 @@
+---
+
+- name: Set up users for manual access
+  user:
+    name: '{{ item.name }}'
+    shell: '{{ item.shell | default("/bin/bash") }}'
+    password: '{{ item.password | default(omit) }}'
+    update_password: on_create
+    groups: '{{ item.groups | default([]) }}'
+    state: '{{ item.state | default("present") }}'
+  with_items: '{{ users }}'
+
+- name: Ensure .ssh directory
+  file:
+    dest: '/home/{{ item.name }}/.ssh'
+    state: directory
+    mode: 0700
+    owner: '{{ item.name }}'
+    group: '{{ item.name }}'
+  with_items: '{{ users }}'
+
+- name: Install SSH keys for users
+  copy:
+    content: '{{ item.ssh_key }}'
+    dest: '/home/{{ item.name }}/.ssh/authorized_keys'
+    mode: 0755
+    owner: '{{ item.name }}'
+    group: '{{ item.name }}'
+  when: item.ssh_key is defined
+  with_items: '{{ users }}'
