@@ -33,6 +33,7 @@
   get_url:
     url: 'https://github.com/{{ item.github_key_user }}.keys'
     dest: '/home/{{ item.name }}/.ssh/authorized_keys'
+    force: yes
     mode: 0600
     owner: '{{ item.name }}'
     group: '{{ item.name }}'
