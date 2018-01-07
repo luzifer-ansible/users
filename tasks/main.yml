@@ -1,6 +1,6 @@
 ---
 
-- name: Set up users for manual access
+- name: Create and configure users
   user:
     name: '{{ item.name }}'
     shell: '{{ item.shell | default("/bin/bash") }}'
@@ -19,7 +19,7 @@
     group: '{{ item.name }}'
   with_items: '{{ users }}'
 
-- name: Install SSH keys for users
+- name: Install SSH keys for user
   copy:
     content: '{{ item.ssh_key }}'
     dest: '{% if item.name != "root" %}/home{% endif %}/{{ item.name }}/.ssh/authorized_keys'
