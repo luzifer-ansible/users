@@ -17,6 +17,7 @@
     mode: 0700
     owner: '{{ item.name }}'
     group: '{{ item.name }}'
+  when: '{{ item.state | default("present") == "present" }}'
   with_items: '{{ users }}'
 
 - name: Install SSH keys for user
